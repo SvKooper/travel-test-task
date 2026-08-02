@@ -1,8 +1,25 @@
 services:
-  web:
+  backend:
     build:
-      context: .
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/.env
+    volumes:
+      - backend_data:/app/data
+    restart: unless-stopped
+    # Not published to the host — only reachable from other services on this
+    # network (the frontend's nginx proxies /api/* to it, see frontend/nginx.conf).
+
+  frontend:
+    build:
+      context: ./frontend
       dockerfile: Dockerfile
     ports:
       - "8080:80"
+    depends_on:
+      - backend
     restart: unless-stopped
+
+volumes:
+  backend_data:

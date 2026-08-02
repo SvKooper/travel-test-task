@@ -1,45 +1,93 @@
 # Mounty — Test Task
 
-Landing page (Vite + React + TypeScript + Tailwind CSS v4).
+Monorepo: landing page (Vite + React + TypeScript + Tailwind CSS v4) and a
+minimal admin panel backend (Fastify + Prisma + SQLite) for managing FAQ and
+Послуги content.
 
-## Development
-
-```bash
-npm install
-npm run dev       # http://localhost:5173
-npm run build      # production build to dist/
-npm run lint
+```
+frontend/   Vite + React + TS — public landing page + /admin panel
+backend/    Fastify + TS + Prisma — auth (fixed admin) + FAQ/Послуги CRUD
 ```
 
-## Docker
+## Quick start (Docker Compose — recommended)
 
-Build and run the production build in a container (Vite build served by nginx).
+1. Copy the backend env template and fill in real secrets:
 
-### Using Docker Compose (recommended)
+   ```bash
+   cp backend/.env.example backend/.env
+   ```
 
-```bash
-docker compose up -d --build
-```
+   Required values in `backend/.env`:
+   - `ADMIN_USERNAME` — admin login (single fixed user, no registration)
+   - `ADMIN_PASSWORD_HASH` — bcrypt hash of the admin password, generate with:
+     ```bash
+     node -e "console.log(require('bcryptjs').hashSync('your-password', 10))"
+     ```
+   - `JWT_SECRET` — any random string
+   - `COOKIE_SECURE` — leave `false` unless this is served over HTTPS
 
-The app will be available at [http://localhost:8080](http://localhost:8080).
+2. Build and start both services:
 
-Stop it with:
+   ```bash
+   docker compose up -d --build
+   ```
+
+3. Open [http://localhost:8080](http://localhost:8080) — the frontend's nginx
+   proxies `/api/*` to the backend (same-origin, no CORS involved).
+
+4. Admin panel: [http://localhost:8080/admin](http://localhost:8080/admin),
+   log in with the credentials from step 1.
+
+Stop everything:
 
 ```bash
 docker compose down
 ```
 
-### Using plain Docker
+Data (SQLite file) persists in a named Docker volume (`backend_data`) across
+restarts. Remove it with `docker compose down -v` to fully reset.
+
+## Local development (without Docker)
+
+### Frontend
 
 ```bash
-docker build -t mounty-test-task .
-docker run -d -p 8080:80 --name mounty-test-task mounty-test-task
+cd frontend
+npm install
+npm run dev       # http://localhost:5173
+npm run build
+npm run lint
 ```
 
-The app will be available at [http://localhost:8080](http://localhost:8080).
-
-Stop and remove the container:
+### Backend
 
 ```bash
-docker stop mounty-test-task && docker rm mounty-test-task
+cd backend
+npm install
+cp .env.example .env   # fill in ADMIN_USERNAME / ADMIN_PASSWORD_HASH / JWT_SECRET
+npm run prisma:migrate
+npm run dev             # http://localhost:4000
 ```
+
+When running both outside Docker, the frontend dev server (`:5173`) and the
+backend (`:4000`) are on different origins, so the backend's CORS config
+(`CORS_ORIGIN`, defaults to `http://localhost:5173`) handles that — no proxy
+needed locally.
+
+## Running services individually with plain Docker
+
+```bash
+# Backend
+cd backend
+docker build -t mounty-backend .
+docker run -d -p 4000:4000 --env-file .env -v mounty_backend_data:/app/data --name mounty-backend mounty-backend
+
+# Frontend
+cd frontend
+docker build -t mounty-frontend .
+docker run -d -p 8080:80 --name mounty-frontend mounty-frontend
+```
+
+Note: running the frontend container standalone (without `docker compose`)
+means its nginx proxy target (`backend`) won't resolve — use Docker Compose
+for the full stack, this is mainly useful for iterating on one service's image.
