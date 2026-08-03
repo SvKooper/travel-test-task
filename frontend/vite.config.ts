@@ -11,4 +11,10 @@ export default defineConfig({
       '@': path.resolve(import.meta.dirname, './src'),
     },
   },
+  server: {
+    proxy: {
+      // Mirrors nginx.conf's /api/ reverse proxy so `fetch('/api/...')` works the same in dev and prod.
+      '/api': 'http://localhost:4000',
+    },
+  },
 })

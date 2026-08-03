@@ -27,7 +27,7 @@ function Hero() {
                 </h1>
                 <a
                     href="#about"
-                    className="mt-6 block bg-white py-4 text-center text-sm font-bold uppercase tracking-widest text-neutral-950 transition-colors hover:bg-white/90"
+                    className="mt-6 block bg-white py-4 text-center text-sm font-bold uppercase tracking-widest text-neutral-950 transition-colors hover:bg-primary"
                 >
                     Дізнатися більше
                 </a>

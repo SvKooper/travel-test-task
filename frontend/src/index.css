@@ -7,4 +7,11 @@
   --font-tektur: "Tektur", sans-serif;
   --font-oswald: "Oswald", sans-serif;
   --font-inter: "Inter", sans-serif;
+
+  --color-accent: #aa3bff;
+  --color-primary: #dd3030;
+}
+
+html {
+  scroll-behavior: smooth;
 }
