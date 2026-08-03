@@ -1,7 +1,9 @@
+import Hero from '@/sections/Hero'
+
 function App() {
   return (
-    <main className="min-h-screen bg-background text-foreground">
-      {/* Sections (Hero, Послуги, FAQ) will be added here */}
+    <main className="min-h-screen bg-neutral-950">
+      <Hero />
     </main>
   )
 }
