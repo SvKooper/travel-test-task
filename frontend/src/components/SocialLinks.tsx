@@ -18,7 +18,7 @@ const links = [
 
 function SocialLinks() {
   return (
-    <ul className="flex items-center gap-4">
+    <ul className="flex items-center gap-8">
       {links.map(({ label, href, Icon }) => (
         <li key={label}>
           <a
@@ -26,7 +26,7 @@ function SocialLinks() {
             aria-label={label}
             className="block text-white/90 transition-colors hover:text-white"
           >
-            <Icon className="h-5 w-5" />
+            <Icon className="h-6 w-6" />
           </a>
         </li>
       ))}

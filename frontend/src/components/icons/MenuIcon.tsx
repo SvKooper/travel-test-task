@@ -1,9 +1,11 @@
-import type { SVGProps } from 'react'
+import type { HTMLAttributes } from 'react'
 
-export function MenuIcon(props: SVGProps<SVGSVGElement>) {
+export function MenuIcon({ className = '', ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} {...props}>
-      <path strokeLinecap="round" d="M4 7h16M4 12h16M4 17h16" />
-    </svg>
+    <div className={`flex flex-col items-center justify-between py-[3px] cursor-pointer ${className}`} {...props}>
+      <span className="h-1 w-8 bg-current transition-all duration-200 group-hover:w-4" />
+      <span className="h-1 w-4 bg-current transition-all duration-200 group-hover:w-8" />
+      <span className="h-1 w-8 bg-current transition-all duration-200 group-hover:w-4" />
+    </div>
   )
 }
