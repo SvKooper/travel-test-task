@@ -21,9 +21,9 @@ function Header() {
       <button
         type="button"
         aria-label="Відкрити меню"
-        className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/30 text-white md:hidden"
+        className="flex h-11 w-11 items-center justify-center rounded-md bg-red-600 text-white md:hidden"
       >
-        <MenuIcon className="h-5 w-5" />
+        <MenuIcon className="h-6 w-6" strokeWidth={2} />
       </button>
     </header>
   )
