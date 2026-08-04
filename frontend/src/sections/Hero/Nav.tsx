@@ -7,15 +7,27 @@ const links = [
   { label: 'FAQ', href: '#faq' },
 ]
 
-function Nav() {
+interface Props {
+  variant?: 'default' | 'mobile'
+  onNavigate?: () => void
+}
+
+function Nav({ variant = 'default', onNavigate }: Props) {
+  const isMobile = variant === 'mobile'
+
   return (
     <nav>
-      <ul className="-ml-4 flex flex-col text-sm font-bold uppercase tracking-wide text-white">
+      <ul
+        className={`flex flex-col font-bold uppercase text-white ${
+          isMobile ? 'gap-2 text-3xl tracking-wide' : '-ml-4 text-sm tracking-wide'
+        }`}
+      >
         {links.map(({ label, href }) => (
           <li key={label}>
             <a
               href={href}
-              className="inline-block p-[8px] transition-colors hover:bg-primary"
+              onClick={onNavigate}
+              className={`inline-block transition-colors hover:bg-primary ${isMobile ? 'py-2' : 'p-[8px]'}`}
             >
               {label}
             </a>

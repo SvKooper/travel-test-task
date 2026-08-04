@@ -14,7 +14,7 @@ function Hero() {
       <Header />
 
       <div className="relative z-10 flex flex-1 flex-col justify-end gap-8 md:flex-row md:items-center md:justify-between p-6 ">
-        <div className="hidden md:block">
+        <div className="hidden lg:block">
           <Nav />
         </div>
 

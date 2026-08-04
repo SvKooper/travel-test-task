@@ -18,7 +18,7 @@ const links = [
 
 function SocialLinks() {
   return (
-    <ul className="flex items-center gap-8">
+    <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-4 lg:flex-nowrap lg:justify-start lg:gap-8">
       {links.map(({ label, href, Icon }) => (
         <li key={label}>
           <a
