@@ -1,5 +1,5 @@
-import Hero from '@/sections/Hero'
-import Services from '@/sections/Services'
+import Hero from '@/sections/Hero/Hero.tsx'
+import Services from '@/sections/Services/Services.tsx'
 
 function App() {
   return (

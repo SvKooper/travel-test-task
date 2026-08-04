@@ -1,5 +1,5 @@
-import Header from './Header'
-import Nav from './Nav'
+import Header from './Header.tsx'
+import Nav from './Nav.tsx'
 
 function Hero() {
   return (
@@ -20,7 +20,7 @@ function Hero() {
 
         <div className="flex max-w-xl md:pr-24 justify-center">
             <div>
-                <h1 className="text-7xl font-extrabold uppercase leading-[0.95] text-white sm:text-7xl md:text-5xl lg:text-7xl">
+                <h1 className="text-5xl font-extrabold uppercase leading-[0.95] text-white sm:text-7xl md:text-5xl lg:text-7xl">
                     Мааааам, я
                     <br/>
                     в Карпати
