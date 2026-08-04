@@ -1,7 +1,7 @@
 import {useContentAdmin} from '@/admin/hooks/useContentAdmin.ts'
 
 function ContentSection() {
-  const {heroTitle, setHeroTitle, isLoading, isSaving, error, savedAt, isDirty, save} = useContentAdmin()
+  const {heroTitle, setHeroTitle, isLoading, isSaving, error, isDirty, save} = useContentAdmin()
 
   if (isLoading) return null
 

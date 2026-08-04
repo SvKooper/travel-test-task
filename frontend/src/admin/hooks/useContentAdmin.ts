@@ -10,7 +10,6 @@ export const useContentAdmin = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [savedAt, setSavedAt] = useState<number | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -52,5 +51,5 @@ export const useContentAdmin = () => {
 
   const isDirty = heroTitle !== savedHeroTitle
 
-  return {heroTitle, setHeroTitle, isLoading, isSaving, error, savedAt, isDirty, save}
+  return {heroTitle, setHeroTitle, isLoading, isSaving, error, isDirty, save}
 }
