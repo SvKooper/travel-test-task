@@ -8,6 +8,7 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
+    "lint": "oxlint",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
@@ -30,6 +31,7 @@
   "devDependencies": {
     "@types/node": "^26.1.2",
     "dotenv": "^17.4.2",
+    "oxlint": "^1.75.0",
     "prisma": "^7.9.1",
     "tsx": "^4.23.4",
     "typescript": "^7.0.2"
