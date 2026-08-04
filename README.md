@@ -85,9 +85,14 @@ docker run -d -p 4000:4000 --env-file .env -v mounty_backend_data:/app/data --na
 # Frontend
 cd frontend
 docker build -t mounty-frontend .
-docker run -d -p 8080:80 --name mounty-frontend mounty-frontend
+docker run -d -p 8080:80 \
+  -e BACKEND_HOST=host.docker.internal \
+  -e BACKEND_PORT=4000 \
+  --name mounty-frontend mounty-frontend
 ```
 
-Note: running the frontend container standalone (without `docker compose`)
-means its nginx proxy target (`backend`) won't resolve — use Docker Compose
-for the full stack, this is mainly useful for iterating on one service's image.
+Note: the frontend's nginx config is an envsubst template — `BACKEND_HOST`
+and `BACKEND_PORT` must be set or nginx will fail to start (empty
+`proxy_pass` target). Docker Compose sets these automatically; when running
+the frontend container standalone, point them at wherever your backend is
+actually reachable from the container.
