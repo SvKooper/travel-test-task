@@ -1,7 +1,7 @@
-import Logo from '@/components/Logo'
-import SocialLinks from '@/components/SocialLinks'
-import LanguageSwitch from '@/components/LanguageSwitch'
-import { MenuIcon } from '@/components/icons/MenuIcon'
+import Logo from '@/components/Logo.tsx'
+import SocialLinks from '@/components/SocialLinks.tsx'
+import LanguageSwitch from '@/components/LanguageSwitch.tsx'
+import { MenuIcon } from '@/components/icons/MenuIcon.tsx'
 
 function Header() {
   return (

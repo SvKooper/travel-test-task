@@ -21,11 +21,10 @@ model FaqItem {
 }
 
 model ServiceItem {
-  id          Int      @id @default(autoincrement())
-  icon        String
-  title       String
-  description String
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  icon      String
+  title     String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

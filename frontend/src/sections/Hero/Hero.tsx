@@ -1,5 +1,5 @@
-import Header from './Header'
-import Nav from './Nav'
+import Header from './Header.tsx'
+import Nav from './Nav.tsx'
 
 function Hero() {
   return (
@@ -20,14 +20,14 @@ function Hero() {
 
         <div className="flex max-w-xl md:pr-24 justify-center">
             <div>
-                <h1 className="text-7xl font-extrabold uppercase leading-[0.95] text-white sm:text-7xl md:text-5xl lg:text-7xl">
+                <h1 className="text-5xl font-extrabold uppercase leading-[0.95] text-white sm:text-7xl md:text-5xl lg:text-7xl">
                     Мааааам, я
                     <br/>
                     в Карпати
                 </h1>
                 <a
                     href="#about"
-                    className="mt-6 block bg-white py-4 text-center text-sm font-bold uppercase tracking-widest text-neutral-950 transition-colors hover:bg-white/90"
+                    className="mt-6 block bg-white py-4 text-center text-sm font-bold uppercase tracking-widest text-neutral-950 transition-colors hover:bg-primary"
                 >
                     Дізнатися більше
                 </a>
