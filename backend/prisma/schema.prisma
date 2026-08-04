@@ -28,3 +28,10 @@ model ServiceItem {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// Singleton row (fixed id 1) holding editable copy for the public landing page.
+model SiteContent {
+  id        Int      @id @default(1)
+  heroTitle String   @default("Мааааам, я\nв Карпати")
+  updatedAt DateTime @updatedAt
+}
