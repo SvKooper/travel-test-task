@@ -19,10 +19,11 @@ export const useFaqSave = (item: FaqDraft, onSaved: (tempId: number, saved: FaqI
         })
         onSaved(item.id, created)
       } else {
-        await adminRequest<FaqItem>(`/api/faq/${item.id}`, {
+        const updated = await adminRequest<FaqItem>(`/api/faq/${item.id}`, {
           method: 'PUT',
           body: JSON.stringify({question: item.question, answer: item.answer, order: item.order}),
         })
+        onSaved(item.id, updated)
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Не вдалося зберегти')

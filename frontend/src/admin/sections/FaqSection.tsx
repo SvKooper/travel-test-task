@@ -1,8 +1,24 @@
 import {useState} from 'react'
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
+import {CSS} from '@dnd-kit/utilities'
+import {DragHandleIcon} from '@/components/icons/DragHandleIcon.tsx'
 import type {FaqItem} from '@/domain/faq.ts'
 import {adminRequest} from '@/admin/api.ts'
 import {useFaqItems, type FaqDraft} from '@/admin/hooks/useFaqItems.ts'
-import {useFaqMove} from '@/admin/hooks/useFaqMove.ts'
+import {useFaqReorder} from '@/admin/hooks/useFaqReorder.ts'
 import {useFaqSave} from '@/admin/hooks/useFaqSave.ts'
 
 let tempIdCounter = 0
@@ -10,12 +26,24 @@ const nextTempId = () => --tempIdCounter
 
 function FaqSection() {
   const {items, setItems, isLoading} = useFaqItems()
-  const handleMove = useFaqMove(setItems)
+  const {handleDragEnd, reorderError} = useFaqReorder(items, setItems)
+  const sensors = useSensors(
+    useSensor(PointerSensor, {activationConstraint: {distance: 5}}),
+    useSensor(KeyboardSensor, {coordinateGetter: sortableKeyboardCoordinates}),
+  )
 
   const handleAdd = () => {
     setItems((prev) => [
       ...prev,
-      {id: nextTempId(), question: '', answer: '', order: prev.length, isNew: true},
+      {
+        id: nextTempId(),
+        question: '',
+        answer: '',
+        order: prev.length,
+        isNew: true,
+        savedQuestion: '',
+        savedAnswer: '',
+      },
     ])
   }
 
@@ -24,7 +52,11 @@ function FaqSection() {
   }
 
   const handleSaved = (tempId: number, saved: FaqItem) => {
-    setItems((prev) => prev.map((item) => (item.id === tempId ? {...saved} : item)))
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === tempId ? {...saved, savedQuestion: saved.question, savedAnswer: saved.answer} : item,
+      ),
+    )
   }
 
   const handleDelete = async (id: number) => {
@@ -42,18 +74,21 @@ function FaqSection() {
 
   return (
     <div className="flex max-w-2xl flex-col gap-4">
-      {items.map((item, index) => (
-        <FaqRow
-          key={item.id}
-          item={item}
-          isFirst={index === 0}
-          isLast={index === items.length - 1}
-          onChange={handleChange}
-          onDelete={handleDelete}
-          onMove={handleMove}
-          onSaved={handleSaved}
-        />
-      ))}
+      {reorderError && <p className="font-oswald text-sm text-primary">{reorderError}</p>}
+
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={items.map((item) => item.id)} strategy={verticalListSortingStrategy}>
+          {items.map((item) => (
+            <FaqRow
+              key={item.id}
+              item={item}
+              onChange={handleChange}
+              onDelete={handleDelete}
+              onSaved={handleSaved}
+            />
+          ))}
+        </SortableContext>
+      </DndContext>
 
       <button
         type="button"
@@ -68,18 +103,23 @@ function FaqSection() {
 
 interface FaqRowProps {
   item: FaqDraft
-  isFirst: boolean
-  isLast: boolean
   onChange: (id: number, patch: Partial<FaqDraft>) => void
   onDelete: (id: number) => Promise<void>
-  onMove: (id: number, direction: -1 | 1) => void
   onSaved: (tempId: number, saved: FaqItem) => void
 }
 
-function FaqRow({item, isFirst, isLast, onChange, onDelete, onMove, onSaved}: FaqRowProps) {
+function FaqRow({item, onChange, onDelete, onSaved}: FaqRowProps) {
   const [isDeleting, setIsDeleting] = useState(false)
   const [deleteError, setDeleteError] = useState<string | null>(null)
   const {isSaving, error: saveError, handleSave} = useFaqSave(item, onSaved)
+  const {attributes, listeners, setNodeRef, transform, transition, isDragging} = useSortable({
+    id: item.id,
+  })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  }
 
   const handleDelete = async () => {
     setIsDeleting(true)
@@ -94,30 +134,24 @@ function FaqRow({item, isFirst, isLast, onChange, onDelete, onMove, onSaved}: Fa
   }
 
   const error = saveError ?? deleteError
+  const isDirty = item.question !== item.savedQuestion || item.answer !== item.savedAnswer
 
   return (
-    <div className="flex flex-col gap-3 border border-white/10 bg-white/5 p-4">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`flex flex-col gap-3 border border-white/10 bg-white/5 p-4 ${isDragging ? 'opacity-50' : ''}`}
+    >
       <div className="flex items-start gap-3">
-        <div className="flex flex-col gap-1">
-          <button
-            type="button"
-            onClick={() => onMove(item.id, -1)}
-            disabled={isFirst}
-            aria-label="Перемістити вгору"
-            className="px-2 py-1 text-white/60 transition-colors hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
-          >
-            ▲
-          </button>
-          <button
-            type="button"
-            onClick={() => onMove(item.id, 1)}
-            disabled={isLast}
-            aria-label="Перемістити вниз"
-            className="px-2 py-1 text-white/60 transition-colors hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
-          >
-            ▼
-          </button>
-        </div>
+        <button
+          type="button"
+          {...attributes}
+          {...listeners}
+          aria-label="Перетягнути для зміни порядку"
+          className="cursor-grab touch-none px-2 py-1 text-white/60 transition-colors hover:text-white active:cursor-grabbing"
+        >
+          <DragHandleIcon />
+        </button>
 
         <div className="flex flex-1 flex-col gap-2">
           <textarea
@@ -143,7 +177,7 @@ function FaqRow({item, isFirst, isLast, onChange, onDelete, onMove, onSaved}: Fa
         <button
           type="button"
           onClick={handleSave}
-          disabled={isSaving}
+          disabled={isSaving || !isDirty}
           className="bg-white px-6 py-2 text-center text-xs font-bold uppercase tracking-widest text-neutral-950 transition-colors hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isSaving ? 'Збереження...' : 'Зберегти'}

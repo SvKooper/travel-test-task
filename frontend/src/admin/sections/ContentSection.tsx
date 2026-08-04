@@ -1,7 +1,7 @@
 import {useContentAdmin} from '@/admin/hooks/useContentAdmin.ts'
 
 function ContentSection() {
-  const {heroTitle, setHeroTitle, isLoading, isSaving, error, savedAt, save} = useContentAdmin()
+  const {heroTitle, setHeroTitle, isLoading, isSaving, error, savedAt, isDirty, save} = useContentAdmin()
 
   if (isLoading) return null
 
@@ -26,7 +26,7 @@ function ContentSection() {
       <button
         type="button"
         onClick={save}
-        disabled={isSaving}
+        disabled={isSaving || !isDirty}
         className="self-start bg-white px-8 py-3 text-center text-sm font-bold uppercase tracking-widest text-neutral-950 transition-colors hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isSaving ? 'Збереження...' : 'Зберегти'}
