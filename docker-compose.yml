@@ -9,12 +9,15 @@ services:
       - backend_data:/app/data
     restart: unless-stopped
     # Not published to the host — only reachable from other services on this
-    # network (the frontend's nginx proxies /api/* to it, see frontend/nginx.conf).
+    # network (the frontend's nginx proxies /api/* to it, see frontend/nginx.conf.template).
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    environment:
+      BACKEND_HOST: backend
+      BACKEND_PORT: "4000"
     ports:
       - "8080:80"
     depends_on:
