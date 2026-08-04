@@ -1,10 +1,11 @@
 import {ServicesList} from "@/components/services/ServicesList.tsx";
-import {useServices} from "@/sections/Services/hooks/useServices.ts";
+import type {ServiceItem} from "@/domain/services.ts";
 
+interface ServicesProps {
+  services: ServiceItem[]
+}
 
-function Services() {
-  const services = useServices();
-
+function Services({services}: ServicesProps) {
   return (
     <section id="services" className="flex flex-col w-full bg-neutral-950 h-dvh border-b border-white/10">
       <div className="border-b border-white/10 px-6 py-4 sm:px-8">

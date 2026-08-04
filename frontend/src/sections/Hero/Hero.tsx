@@ -1,10 +1,11 @@
 import Header from './Header.tsx'
 import Nav from './Nav.tsx'
-import {useSiteContent} from './hooks/useSiteContent.ts'
 
-function Hero() {
-  const {heroTitle} = useSiteContent()
+interface HeroProps {
+  heroTitle: string
+}
 
+function Hero({heroTitle}: HeroProps) {
   return (
     <section className="relative flex h-dvh w-full flex-col overflow-hidden">
       <img

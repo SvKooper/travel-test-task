@@ -3,6 +3,7 @@ import type {FaqItem} from "@/domain/faq.ts";
 
 export const useFaq = () => {
     const [faq, setFaq] = useState<FaqItem[]>([])
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         let cancelled = false
@@ -12,11 +13,14 @@ export const useFaq = () => {
             .then((data: FaqItem[]) => {
                 if (!cancelled) setFaq(data)
             })
+            .finally(() => {
+                if (!cancelled) setIsLoading(false)
+            })
 
         return () => {
             cancelled = true
         }
     }, [])
 
-    return faq
+    return {faq, isLoading}
 }

@@ -7,6 +7,7 @@ const DEFAULT_CONTENT: SiteContent = {
 
 export const useSiteContent = () => {
     const [content, setContent] = useState<SiteContent>(DEFAULT_CONTENT)
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         let cancelled = false
@@ -16,11 +17,14 @@ export const useSiteContent = () => {
             .then((data: SiteContent) => {
                 if (!cancelled) setContent(data)
             })
+            .finally(() => {
+                if (!cancelled) setIsLoading(false)
+            })
 
         return () => {
             cancelled = true
         }
     }, [])
 
-    return content
+    return {content, isLoading}
 }
