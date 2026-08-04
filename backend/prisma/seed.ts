@@ -49,6 +49,12 @@ async function main() {
   for (const item of faq) {
     await prisma.faqItem.create({ data: item })
   }
+
+  await prisma.siteContent.upsert({
+    where: { id: 1 },
+    update: {},
+    create: { id: 1, heroTitle: 'Мааааам, я\nв Карпати' },
+  })
 }
 
 main()

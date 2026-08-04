@@ -1,7 +1,10 @@
 import Header from './Header.tsx'
 import Nav from './Nav.tsx'
+import {useSiteContent} from './hooks/useSiteContent.ts'
 
 function Hero() {
+  const {heroTitle} = useSiteContent()
+
   return (
     <section className="relative flex h-dvh w-full flex-col overflow-hidden">
       <img
@@ -21,9 +24,12 @@ function Hero() {
         <div className="flex max-w-xl md:pr-24 justify-center">
             <div>
                 <h1 className="text-5xl font-extrabold uppercase leading-[0.95] text-white sm:text-7xl md:text-5xl lg:text-7xl">
-                    Мааааам, я
-                    <br/>
-                    в Карпати
+                    {heroTitle.split('\n').map((line, index) => (
+                        <span key={index}>
+                            {index > 0 && <br/>}
+                            {line}
+                        </span>
+                    ))}
                 </h1>
                 <a
                     href="#about"

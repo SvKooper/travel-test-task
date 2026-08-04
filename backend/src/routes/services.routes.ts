@@ -4,7 +4,6 @@ import { prisma } from '../db/prisma.js'
 interface ServiceBody {
   icon: string
   title: string
-  description: string
   order?: number
 }
 
@@ -21,19 +20,19 @@ export async function servicesRoutes(fastify: FastifyInstance) {
   })
 
   fastify.post<{ Body: ServiceBody }>('/', async (request, reply) => {
-    const { icon, title, description, order = 0 } = request.body
-    const item = await prisma.serviceItem.create({ data: { icon, title, description, order } })
+    const { icon, title, order = 0 } = request.body
+    const item = await prisma.serviceItem.create({ data: { icon, title, order } })
     return reply.code(201).send(item)
   })
 
   fastify.put<{ Params: { id: string }; Body: ServiceBody }>('/:id', async (request, reply) => {
     const id = Number(request.params.id)
-    const { icon, title, description, order } = request.body
+    const { icon, title, order } = request.body
 
     try {
       const item = await prisma.serviceItem.update({
         where: { id },
-        data: { icon, title, description, order },
+        data: { icon, title, order },
       })
       return item
     } catch {
