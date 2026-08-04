@@ -1,8 +1,10 @@
 import {useCallback, useEffect, useState} from 'react'
 import type {SiteContent} from '@/domain/content.ts'
 import {adminRequest} from '@/admin/api.ts'
+import {useSnackbar} from '@/admin/context/SnackbarContext.tsx'
 
 export const useContentAdmin = () => {
+  const {showSnackbar} = useSnackbar()
   const [heroTitle, setHeroTitle] = useState('')
   const [savedHeroTitle, setSavedHeroTitle] = useState('')
   const [isLoading, setIsLoading] = useState(true)
@@ -40,12 +42,13 @@ export const useContentAdmin = () => {
       })
       setSavedHeroTitle(heroTitle)
       setSavedAt(Date.now())
+      showSnackbar('Зміна застосована')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Не вдалося зберегти')
     } finally {
       setIsSaving(false)
     }
-  }, [heroTitle])
+  }, [heroTitle, showSnackbar])
 
   const isDirty = heroTitle !== savedHeroTitle
 

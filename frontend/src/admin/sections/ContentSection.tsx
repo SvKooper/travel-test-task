@@ -21,7 +21,6 @@ function ContentSection() {
       </div>
 
       {error && <p className="font-oswald text-sm text-primary">{error}</p>}
-      {savedAt && !error && <p className="font-oswald text-sm text-white/60">Збережено</p>}
 
       <button
         type="button"

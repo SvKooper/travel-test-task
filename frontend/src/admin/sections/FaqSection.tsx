@@ -17,6 +17,7 @@ import {CSS} from '@dnd-kit/utilities'
 import {DragHandleIcon} from '@/components/icons/DragHandleIcon.tsx'
 import type {FaqItem} from '@/domain/faq.ts'
 import {adminRequest} from '@/admin/api.ts'
+import {useSnackbar} from '@/admin/context/SnackbarContext.tsx'
 import {useFaqItems, type FaqDraft} from '@/admin/hooks/useFaqItems.ts'
 import {useFaqReorder} from '@/admin/hooks/useFaqReorder.ts'
 import {useFaqSave} from '@/admin/hooks/useFaqSave.ts'
@@ -25,6 +26,7 @@ let tempIdCounter = 0
 const nextTempId = () => --tempIdCounter
 
 function FaqSection() {
+  const {showSnackbar} = useSnackbar()
   const {items, setItems, isLoading} = useFaqItems()
   const {handleDragEnd, reorderError} = useFaqReorder(items, setItems)
   const sensors = useSensors(
@@ -68,6 +70,7 @@ function FaqSection() {
     }
 
     setItems((prev) => prev.filter((it) => it.id !== id))
+    showSnackbar('Зміна застосована')
   }
 
   if (isLoading) return null

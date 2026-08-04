@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react'
 import type {ServiceItem} from '@/domain/services.ts'
 import {adminRequest} from '@/admin/api.ts'
+import {useSnackbar} from '@/admin/context/SnackbarContext.tsx'
 import {SERVICE_ICONS} from '@/components/icons/services'
 import {PlaneIcon} from '@/components/icons/services/PlaneIcon.tsx'
 
@@ -54,6 +55,7 @@ interface ServiceRowProps {
 }
 
 function ServiceRow({service, onChange, onSaved}: ServiceRowProps) {
+  const {showSnackbar} = useSnackbar()
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const Icon = SERVICE_ICONS[service.icon] ?? PlaneIcon
@@ -69,6 +71,7 @@ function ServiceRow({service, onChange, onSaved}: ServiceRowProps) {
         body: JSON.stringify({icon: service.icon, title: service.title, order: service.order}),
       })
       onSaved(service.id, service.title)
+      showSnackbar('Зміна застосована')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Не вдалося зберегти')
     } finally {
