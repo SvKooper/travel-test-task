@@ -40,7 +40,6 @@ export const useContentAdmin = () => {
         body: JSON.stringify({heroTitle}),
       })
       setSavedHeroTitle(heroTitle)
-      setSavedAt(Date.now())
       showSnackbar('Зміна застосована')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Не вдалося зберегти')
