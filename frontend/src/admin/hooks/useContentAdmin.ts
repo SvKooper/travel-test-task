@@ -1,9 +1,12 @@
 import {useCallback, useEffect, useState} from 'react'
 import type {SiteContent} from '@/domain/content.ts'
 import {adminRequest} from '@/admin/api.ts'
+import {useSnackbar} from '@/admin/context/SnackbarContext.tsx'
 
 export const useContentAdmin = () => {
+  const {showSnackbar} = useSnackbar()
   const [heroTitle, setHeroTitle] = useState('')
+  const [savedHeroTitle, setSavedHeroTitle] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -14,7 +17,10 @@ export const useContentAdmin = () => {
 
     adminRequest<SiteContent>('/api/content')
       .then((data) => {
-        if (!cancelled) setHeroTitle(data.heroTitle)
+        if (!cancelled) {
+          setHeroTitle(data.heroTitle)
+          setSavedHeroTitle(data.heroTitle)
+        }
       })
       .finally(() => {
         if (!cancelled) setIsLoading(false)
@@ -34,13 +40,17 @@ export const useContentAdmin = () => {
         method: 'PUT',
         body: JSON.stringify({heroTitle}),
       })
+      setSavedHeroTitle(heroTitle)
       setSavedAt(Date.now())
+      showSnackbar('Зміна застосована')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Не вдалося зберегти')
     } finally {
       setIsSaving(false)
     }
-  }, [heroTitle])
+  }, [heroTitle, showSnackbar])
 
-  return {heroTitle, setHeroTitle, isLoading, isSaving, error, savedAt, save}
+  const isDirty = heroTitle !== savedHeroTitle
+
+  return {heroTitle, setHeroTitle, isLoading, isSaving, error, savedAt, isDirty, save}
 }

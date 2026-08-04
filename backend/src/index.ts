@@ -6,11 +6,18 @@ import { authRoutes } from './routes/auth.routes.js'
 import { faqRoutes } from './routes/faq.routes.js'
 import { servicesRoutes } from './routes/services.routes.js'
 import { contentRoutes } from './routes/content.routes.js'
+import { seedIfEmpty } from './db/seed.js'
 
 const PORT = Number(process.env.PORT ?? 4000)
 
 async function main() {
   const fastify = Fastify({ logger: true })
+
+  // Fresh/empty DB (first boot, or a new volume) gets populated with default
+  // content so the site isn't blank; if data already exists this is a no-op.
+  if (await seedIfEmpty()) {
+    fastify.log.info('Database was empty — seeded default content')
+  }
 
   // CORS is only needed for local dev (frontend on :5173, backend on :4000).
   // In production nginx proxies /api/* same-origin, so this is a no-op there.

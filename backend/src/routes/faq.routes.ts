@@ -50,4 +50,21 @@ export async function faqRoutes(fastify: FastifyInstance) {
       return reply.code(404).send({ error: 'FAQ item not found' })
     }
   })
+
+  fastify.patch<{ Body: { ids: number[] } }>('/reorder', async (request, reply) => {
+    const { ids } = request.body
+
+    if (!Array.isArray(ids) || ids.length === 0 || ids.some((id) => typeof id !== 'number')) {
+      return reply.code(400).send({ error: 'ids must be a non-empty array of numbers' })
+    }
+
+    try {
+      await prisma.$transaction(
+        ids.map((id, order) => prisma.faqItem.update({ where: { id }, data: { order } })),
+      )
+      return prisma.faqItem.findMany({ orderBy: { order: 'asc' } })
+    } catch {
+      return reply.code(404).send({ error: 'One or more FAQ items not found' })
+    }
+  })
 }
